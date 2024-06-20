@@ -9,5 +9,5 @@ class BaseModel(models.Model):
         auto_now=True,
     )
 
-    class Meta: 
-        abstract = True,
+    class Meta:
+        abstract = (True,)
