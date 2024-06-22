@@ -1,4 +1,5 @@
-from django.shortcuts import render 
+from django.shortcuts import render
+
 
 def inicio(request):
-    return render(request, 'produtos/base.html')
+    return render(request, 'index.html')
