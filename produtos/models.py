@@ -4,7 +4,7 @@ from utils.base_models import BaseModel
 
 
 class Embalagem(models.Model):
-    name = models.CharField(
+    nome = models.CharField(
         max_length=50,
         verbose_name="Nome da embalagem",
     )
