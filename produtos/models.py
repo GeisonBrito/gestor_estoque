@@ -60,7 +60,7 @@ class Movimentacao(BaseModel):
     )
     preco = models.DecimalField(
         max_digits=10,
-        decimal_places=6, 
+        decimal_places=6,
         verbose_name="Preço do produto na movimentacao"
     )
     codigo_fabricante = models.CharField(
@@ -69,6 +69,38 @@ class Movimentacao(BaseModel):
     )
     class Meta:
         db_table = "movimentacao"
+
+
+class Produto(BaseModel):
+    nome = models.CharField(max_length=100, verbose_name='nome do produto')
+    categoria = models.ForeignKey(
+        'produtos.Categoria',
+        on_delete=models.CASCADE,
+        verbose_name='categoria do produto',
+    )
+    embalagens = models.ManyToManyField(
+        'produtos.Embalagem', verbose_name='embalagens do produto'
+    )
+
+    estoque_minimo = models.FloatField(
+        verbose_name='estoque mínimo do produto',
+    )
+
+    estoque_maximo = models.FloatField(
+        verbose_name='estoque maximo do produto'
+    )
+
+    class Meta:
+        db_table = 'produtos'
+
+
+class Categoria(BaseModel):
+    nome = models.CharField(
+    max_length=100, verbose_name='nome da categoria', unique=True
+)
+
+    class Meta:  # noqa: F811
+        db_table = 'categorias'
 
 
 class Fornecedor(BaseModel):
@@ -85,27 +117,3 @@ class Fornecedor(BaseModel):
 
     class Meta:
         db_table = "fornecedor"
-
-
-class Produto(BaseModel):
-    nome = models.CharField(max_length=100, verbose_name="nome do produto")
-    categoria = models.ForeignKey(
-        "produtos.Categoria",
-        on_delete=models.CASCADE,
-        verbose_name="categoria do produto",
-    )
-
-    embalagem = models.ManyToManyField(
-        "produtos.Embalagem", verbose_name="embalagem do produto"
-    )
-
-    class Meta:
-        db_table = "produtos"
-
-    class Categoria(BaseModel):
-        nome = models.CharField(
-            max_length=100, verbose_name="nome da categoria"
-        )
-
-    class Meta:  # noqa: F811
-        db_table = "categorias"
