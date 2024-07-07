@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 
-from .forms import CategoriaForm, EmbalagemForm, LocalForm
-from .models import Categoria, Embalagem, Local
+from .forms import CategoriaForm, EmbalagemForm, LocalForm, ProdutoForm
+from .models import Categoria, Embalagem, Local, Produto
 
 
 def inicio(request):
@@ -103,7 +103,6 @@ def adicionar_categorias(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
         if form.is_valid():
-            print(request.POST)
             form.save()
             return redirect('listar_categorias')
     else:
@@ -127,3 +126,54 @@ def excluir_categoria(request, id):
     categoria = Categoria.objects.filter(id=id)
     categoria.delete()
     return redirect('listar_categorias')
+
+
+def listar_produtos(request):
+    consulta = request.GET.get('consulta')
+    produtos = Produto.objects.all()
+    categorias = request.GET.get('categoria')
+    embalagens = request.GET.get('embalagens')
+    estoque_minimo = request.GET.get('estoque_minimo')
+    estoque_maximo = request.GET.get('estoque_maximo')
+    locais = Local.objects.all()
+    if consulta:
+        produtos = produtos.filter(nome__icontains=consulta)
+    if categorias:
+        locais = locais.filter(categorias=categorias)
+    if embalagens:
+        locais = locais.filter(embalagens=embalagens)
+    if estoque_minimo:
+        locais = locais.filter(estoque_minimo=estoque_minimo)
+    if estoque_maximo:
+        locais = locais.filter(estoque_maximo=estoque_maximo)
+    return render(request, 'produtos/listar_produtos.html', {'produtos': produtos})  # noqa: E501
+
+
+def adicionar_produtos(request):
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_produtos')
+    else:
+        form = ProdutoForm()
+    return render(request, 'produtos/adicionar_produtos.html', {'form': form})
+
+
+def editar_produto(request, id):
+    produto = Produto.objects.filter(id=id).first()
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST, instance=produto)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_produtos')
+    else:
+        form = ProdutoForm(instance=produto)
+    return render(request, 'produtos/adicionar_produtos.html', {'form': form})
+
+
+def excluir_produto(request, id):
+    produto = Produto.objects.filter(id=id).first()
+    if request.method == 'GET':
+        produto.delete()
+        return redirect('listar_produtos')

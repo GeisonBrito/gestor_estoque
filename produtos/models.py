@@ -16,6 +16,9 @@ class Embalagem(models.Model):
     class Meta:
         db_table = "embalagem"
 
+    def __str__(self):
+        return self.name
+
 
 class Local(BaseModel):
     TIPOS_DE_LOCAL = [("F", "Físico"), ("D", "Digital")]
@@ -70,37 +73,8 @@ class Movimentacao(BaseModel):
     class Meta:
         db_table = "movimentacao"
 
-
-class Produto(BaseModel):
-    nome = models.CharField(max_length=100, verbose_name='nome do produto')
-    categoria = models.ForeignKey(
-        'produtos.Categoria',
-        on_delete=models.CASCADE,
-        verbose_name='categoria do produto',
-    )
-    embalagens = models.ManyToManyField(
-        'produtos.Embalagem', verbose_name='embalagens do produto'
-    )
-
-    estoque_minimo = models.FloatField(
-        verbose_name='estoque mínimo do produto',
-    )
-
-    estoque_maximo = models.FloatField(
-        verbose_name='estoque maximo do produto'
-    )
-
-    class Meta:
-        db_table = 'produtos'
-
-
-class Categoria(BaseModel):
-    nome = models.CharField(
-    max_length=100, verbose_name='nome da categoria', unique=True
-)
-
-    class Meta:  # noqa: F811
-        db_table = 'categorias'
+    def __str__(self):
+        return self.name
 
 
 class Fornecedor(BaseModel):
@@ -117,3 +91,49 @@ class Fornecedor(BaseModel):
 
     class Meta:
         db_table = "fornecedor"
+
+    def __str__(self):
+        return self.name
+
+
+class Produto(BaseModel):
+    nome = models.CharField(
+        max_length=100,
+        verbose_name='nome do produto',
+    )
+    categoria = models.ForeignKey(
+        'produtos.Categoria',
+        on_delete=models.CASCADE,
+        verbose_name='categoria do produto',
+    )
+    embalagens = models.ManyToManyField(
+        'produtos.Embalagem',
+        verbose_name='Embalagens do produto',
+    )
+    estoque_minimo = models.FloatField(
+        verbose_name='Estoque minimo do produto',
+    )
+    estoque_maximo = models.FloatField(
+        verbose_name='Estoque maximo do produto',
+    )
+
+    class Meta:
+        db_table = 'produtos'
+
+    def get_nome_completo(self):
+        return f"{self.nome} ({', '.join([e.nome for e in self.embalagens.all()])})"  # noqa: E501
+
+    def __str__(self):
+        return self.get_nome_completo()
+
+
+class Categoria(BaseModel):
+    name = models.CharField(
+        max_length=100, verbose_name='nome da categoria', unique=True
+    )
+
+    class Meta:
+        db_table = 'categorias'
+
+    def __str__(self):
+        return self.name
