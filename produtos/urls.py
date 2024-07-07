@@ -5,16 +5,20 @@ from .views import (
     adicionar_categorias,
     adicionar_embalagem,
     adicionar_local,
+    adicionar_produtos,
     editar_categoria,
     editar_embalagem,
     editar_local,
+    editar_produto,
     excluir_categoria,
     excluir_embalagem,
     excluir_local,
+    excluir_produto,
     inicio,
     listar_categorias,
     listar_embalagens,
     listar_locais,
+    listar_produtos,
 )
 
 urlpatterns = [
@@ -32,4 +36,9 @@ urlpatterns = [
     path('categorias/adicionar/', adicionar_categorias, name='adicionar_categoria'),  # noqa: E501
     path('categoria/editar/<int:id>', editar_categoria, name='editar_categoria'),  # noqa: E501
     path('categoria/excluir/<int:id>', excluir_categoria, name='excluir_categoria'),  # noqa: E501
+
+    path('produtos/', listar_produtos, name='listar_produtos'),
+    path('produtos/adicionar/', adicionar_produtos, name='adicionar_produtos'),
+    path('produtos/<int:id>/editar', editar_produto, name='editar_produto'),
+    path('produtos/<int:id>/excluir', excluir_produto, name='excluir_produto')
 ]
