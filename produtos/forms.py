@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Categoria, Embalagem, Local, Produto
+from .models import Categoria, Embalagem, Fornecedor, Local, Produto
 
 
 class LocalForm(forms.ModelForm):
@@ -25,3 +25,9 @@ class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
         fields = ['nome', 'categoria', 'embalagens', 'estoque_minimo', 'estoque_maximo']  # noqa: E501
+
+
+class FornecedorForm(forms.ModelForm):
+    class Meta:
+        model = Fornecedor
+        fields = ['nome_social', 'nome_fantasia', 'produtos']
