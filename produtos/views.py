@@ -1,7 +1,13 @@
 from django.shortcuts import redirect, render
 
-from .forms import CategoriaForm, EmbalagemForm, LocalForm, ProdutoForm
-from .models import Categoria, Embalagem, Local, Produto
+from .forms import (
+    CategoriaForm,
+    EmbalagemForm,
+    FornecedorForm,
+    LocalForm,
+    ProdutoForm,
+)
+from .models import Categoria, Embalagem, Fornecedor, Local, Produto
 
 
 def inicio(request):
@@ -177,3 +183,39 @@ def excluir_produto(request, id):
     if request.method == 'GET':
         produto.delete()
         return redirect('listar_produtos')
+
+def listar_fornecedores(request):
+    consulta = request.GET.get('q')
+    fornecedores = Fornecedor.objects.all()
+    if consulta:
+        fornecedores = fornecedores.filter(nome__icontains=consulta)
+    return render(request, 'produtos/listar_fornecedores.html', {'fornecedores': fornecedores})  # noqa: E501
+
+
+def adicionar_fornecedores(request):
+    if request.method == 'POST':
+        form = FornecedorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_fornecedores')
+    else:
+        form = FornecedorForm()
+    return render(request, 'produtos/adicionar_fornecedores.html', {'form': form})  # noqa: E501
+
+
+def editar_fornecedores(request, pk):
+    fornecedores = Fornecedor.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = FornecedorForm(request.POST, instance=fornecedores)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_fornecedores')
+    else:
+        form = FornecedorForm(instance=fornecedores)
+    return render(request, 'produtos/editar_categorias.html', {'form': form, 'fornecedores': fornecedores})  # noqa: E501
+
+
+def excluir_fornecedores(request, pk):
+    local = Fornecedor.objects.get(pk=pk)
+    local.delete()
+    return redirect('listar_fornecedores')
